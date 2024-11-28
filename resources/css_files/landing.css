@@ -1,0 +1,205 @@
+ 
+
+html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+ 
+ /* Body Styling */
+ body {
+     font-family: Arial, sans-serif;
+     line-height: 1.6;
+     color: #333;
+     background-color: #f8f9fa;
+     overflow-x: hidden;
+ }
+
+ /* Hero Header (Header + Hero Section Combined) */
+ .hero-header {
+   display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url(../image/bg.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: center;
+    margin: 10;
+    min-height: 90vh;
+    padding: 0rem 0; /* Add some padding for spacing */
+    position: sta;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+ 
+ .hero-header nav {
+    display: flex;
+    justify-content: space-between; /* Space between logo and links */
+    align-items: center; /* Vertically align items */
+    width: 100%; /* Full width of the container */
+    padding: 0.5rem 2rem; /* Adjust padding for spacing */
+    position: fixed; /* Makes it fixed at the top */
+    top: 0; /* Sticks to the top of the viewport */
+    left: 10; /* Ensures it aligns with the left edge */
+    z-index: 1000;
+}
+.hero-header nav h1 {
+    font-size: 1.5rem; /* Adjust the size of the logo text */
+    font-weight: bold;
+    gap: 2rem;
+    color: #110a29;
+    margin: 10px;
+    margin-left: 40px; /* Remove any default margins */
+}
+
+ .hero-header nav ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem; 
+    margin: 0;
+    padding: 0; 
+}
+
+ .hero-header nav ul li {
+     margin: 0 1.5rem;
+ }
+
+ .hero-header nav ul li a {
+     color: #110a29;
+     text-decoration: none;
+     font-size: 0.85rem;
+     transition: color 0.3s;
+ }
+
+ .hero-header nav ul li a:hover {
+     color: #4CAF50;
+ }
+
+ .hero-header .hero-content {
+     animation: fadeInUp 2s ease-in-out;
+ }
+
+ .hero-header h2 {
+     font-size: 2.5rem;
+     margin-bottom: 1rem;
+ }
+
+ .hero-header p {
+     font-size: 1.2rem;
+     margin-bottom: 2rem;
+ }
+
+ .hero-header .btn {
+     display: inline-block;
+     padding: 0.8rem 1.5rem;
+     background-color: #4CAF50;
+     color: white;
+     text-decoration: none;
+     border-radius: 5px;
+     font-size: 1.2rem;
+     transition: background-color 0.3s, transform 0.3s;
+ }
+
+ .hero-header .btn:hover {
+     background-color: #3a9c42;
+     transform: scale(1.1);
+ }
+
+ .hero img {
+     width: 100%;
+     height: auto;
+     object-fit: cover;
+ }
+
+
+ /* Animations */
+ @keyframes fadeIn {
+     from {
+         opacity: 0;
+     }
+
+     to {
+         opacity: 1;
+     }
+ }
+
+ @keyframes fadeInUp {
+     from {
+         opacity: 0;
+         transform: translateY(20px);
+     }
+
+     to {
+         opacity: 1;
+         transform: translateY(0);
+     }
+ }
+
+ @keyframes slideInDown {
+     from {
+         opacity: 0;
+         transform: translateY(-20px);
+     }
+
+     to {
+         opacity: 1;
+         transform: translateY(0);
+     }
+ }
+
+ /* Responsive Design */
+ @media screen and (max-width: 768px) {
+     .hero-header h2 {
+         font-size: 2rem;
+     }
+
+     .hero-header p {
+         font-size: 1rem;
+     }
+
+     .hero-header .btn {
+         font-size: 1rem;
+         padding: 0.6rem 1.2rem;
+     }
+ }
+
+ /* About Section */
+ .about {
+     text-align: center;
+     padding: 2rem 1rem;
+     background-color: #fff;
+ }
+
+ /* Categories Section */
+ .categories {
+     text-align: center;
+     padding: 2rem 1rem;
+     background-color: #d9d5f4;
+ }
+
+ .category-list {
+     display: flex;
+     justify-content: center;
+     gap: 2rem;
+ }
+
+ .category-item {
+     background-color: white;
+     border: 1px solid #ccc;
+     padding: 1rem;
+     border-radius: 5px;
+     width: 200px;
+ }
+
+ /* Footer */
+ footer {
+     text-align: center;
+     background-color: #f9f9f9;
+     color: rgb(19, 5, 5);
+     padding: 1rem 0;
+ }
