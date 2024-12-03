@@ -1,7 +1,7 @@
 /* General body styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #ddddeb; /* Dark background for the page */
+    background-color: #ddddeb; 
     display: flex;
     justify-content: center;
     align-items: center;
