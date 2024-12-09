@@ -20,14 +20,19 @@
             <input type="password" id="password" name="password" required>
 
             <button type="submit">Submit</button>
-            
-            <p class="login-link">
-                Already have an account? 
-                <a href="/login" class="sign-in">Sign In</a>
-            </p>
 
-            <button type="submit">Sign Up with Google</button>
+            <p class="login-link">
+                Already have an account? <span class="sign-in" id="signInButton">Sign In</span>
+            </p>
+            
+            <button type="button" onclick="window.location.href='/auth/google'">Sign Up with Google</button>
+
         </form>
    </div> 
 </body>
 </html>
+<script>
+    document.getElementById('signInButton').addEventListener('click', function () {
+        window.location.href = '/login'; 
+    });
+</script>

@@ -69,21 +69,23 @@ body {
 .signup-container a:hover {
     text-decoration: underline;
 }
+
 .signup-container .login-link {
+    display: flex; /* Ensures text and link are on the same line */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Aligns text and link vertically */
     margin-top: 15px;
     font-size: 14px;
+    gap: 5px; /* Adds spacing between the text and "Sign In" */
     color: #040404;
-    text-align: center;
-    line-height: 1.5; /* Optional: Adjusts vertical alignment */
 }
-
-.signup-container .login-link a {
+.signup-container .sign-in {
     text-decoration: underline;
-    color: #007bff; /* Optional: Add a distinct color */
-    cursor: pointer;
+    color: #070708;
+    cursor: pointer; /* Makes it look clickable */
 }
 
-.signup-container .login-link a:hover {
-    text-decoration: none; /* Optional: Remove underline on hover */
-    color: #0056b3; /* Optional: Darker shade for hover effect */
+.signup-container .sign-in:hover {
+    text-decoration: none;
+    color: #0056b3;
 }

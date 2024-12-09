@@ -1,3 +1,7 @@
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const db = require('./db');
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -8,12 +12,6 @@ require('dotenv').config();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-const signupRoutes = require('./routes/signup.routes.js');
-const loginRoutes = require('./routes/login.routes.js');
-
-
-
 app.use(express.static('html_files'));
 app.use('/css_files', express.static(path.join(__dirname, 'resources/css_files')));
 app.use('/image', express.static(path.join(__dirname, 'resources/image')));
@@ -22,26 +20,91 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// app.use(session({
-//     secret: 'your-secret-key', 
-//     resave: false,
-//     saveUninitialized: true,
-// }));
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+
+const signupRoutes = require('./routes/signup.routes.js');
+const loginRoutes = require('./routes/login.routes.js');
+const dashboardRoutes = require('./routes/dashboard.routes.js')
+
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const user = await db.user.findUnique({
+            where: { email: profile.emails[0].value }
+        });
+
+        if (!user) {
+            const newUser = await db.user.create({
+                data: {
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    password: null,
+                }
+            });
+            return done(null, newUser);
+        }
+        return done(null, user);
+    } catch (err) {
+        return done(err, null);
+    }
+}));
+
+
+
+passport.serializeUser((user, done) => {
+    done(null, user.email); // Serialize by email
+});
+
+passport.deserializeUser(async (email, done) => {
+    try {
+        const user = await db.user.findUnique({ where: { email } });
+        done(null, user);
+    } catch (err) {
+        done(err, null);
+    }
+});
+
+app.get('/auth/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        res.redirect('/dashboard'); // Redirect to dashboard on success
+    }
+);
+
+
 
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, './resources/html_files','landing.html'));
+    res.sendFile(path.join(__dirname, './resources/html_files', 'landing.html'));
 });
 
 
 // app.get("/api/exercise/:id", async (req, res) => {
 //     const { id } = req.params;
-  
+
 //     try {
 //       const exercise = await prisma.exercise.findUnique({
 //         where: { id },
 //       });
-  
+
 //       if (exercise) {
 //         res.json(exercise);
 //       } else {
@@ -56,9 +119,10 @@ app.get("/", (req, res) => {
 
 
 app.use(signupRoutes);
-app.use(loginRoutes)
+app.use(loginRoutes);
+app.use(dashboardRoutes);
 
-const port = 3001;
+const port = 3000;
 app.listen(port, () => {
     console.log(`App is listening to port ${port}`);
 });
