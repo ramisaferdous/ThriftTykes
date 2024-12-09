@@ -86,15 +86,45 @@ body {
     display: block;
     margin-top: 15px;
     font-size: 14px;
-    color: #007bff;
+    color: #09090a;
     text-decoration: none;
-    transition: text-decoration 0.3s ease;
+  
 }
 
 /* Hover effect for the link */
 .login-container a:hover {
     text-decoration: underline;
 }
+
+.login-container .google-login {
+    
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px;
+    background-color: #f5f5f5; /* Ash color */
+    color: #555; /* Gray text */
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between icon and text */
+    cursor: pointer;
+    
+}
+
+ .login-container .google-login:hover {
+    background-color: #e0e0e0;
+   
+}
+
+
+.google-logo {
+    height: 20px;
+    width: 20px;
+}
+
 
 /* Mobile responsiveness */
 @media screen and (max-width: 480px) {

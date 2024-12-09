@@ -34,7 +34,8 @@ app.use(passport.session());
 
 const signupRoutes = require('./routes/signup.routes.js');
 const loginRoutes = require('./routes/login.routes.js');
-const dashboardRoutes = require('./routes/dashboard.routes.js')
+const logoutRoutes = require('./routes/logout.routes.js');
+const dashboardRoutes = require('./routes/dashboard.routes.js');
 
 
 passport.use(new GoogleStrategy({
@@ -116,10 +117,20 @@ app.get("/", (req, res) => {
 //   });
 
 
+// function ensureAuthenticated(req, res, next) {
+//     const publicPaths = ['/', '/login', '/signup'];
+//     if (publicPaths.includes(req.path) || req.session.isAuthenticated) {
+//         return next();
+//     }
+//     res.redirect('/login');
+// }
+
+// app.use(ensureAuthenticated);
 
 
 app.use(signupRoutes);
 app.use(loginRoutes);
+app.use(logoutRoutes);
 app.use(dashboardRoutes);
 
 const port = 3000;

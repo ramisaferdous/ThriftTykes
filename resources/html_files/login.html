@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css_files/login.css">
-   
+    
+
+
 </head>
+
 <body>
     <div class="login-container">
         <h1>Login</h1>
         <form action="/login" method="POST">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
-            
+
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
-            
+            <a><u>Forgot Password?</u></a>
             <button type="submit">Login</button>
-            <button type="button" onclick="window.location.href='/auth/google'">Login with Google</button>
+            <button type="button" class="google-login" onclick="window.location.href='/auth/google'">
+                <svg class="google-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
+                    <path fill="#EA4335" d="M24 9.5c3.4 0 6.4 1.2 8.8 3.1l6.6-6.6C35.1 2.6 29.9 0 24 0 14.4 0 6.2 5.6 2.2 13.6l7.7 6c2-6.1 7.6-10.1 14.1-10.1z"></path>
+                    <path fill="#4285F4" d="M47.6 24.5c0-1.5-.1-2.9-.4-4.2H24v8.4h13.4c-1.4 3.8-4.7 6.6-8.4 7.5v6.3h10.3C44.7 37.3 47.6 31.6 47.6 24.5z"></path>
+                    <path fill="#FBBC05" d="M10.4 28.5c-.8-2.3-1.2-4.7-1.2-7.1s.4-4.8 1.2-7.1l-7.7-6C1.3 12.1 0 17.4 0 23s1.3 10.9 3.7 15.6l7.7-6c-.8-2.3-1.2-4.7-1.2-7.1z"></path>
+                    <path fill="#34A853" d="M24 48c6.5 0 12.2-2.1 16.4-5.9l-7.7-6c-2.1 1.4-4.7 2.2-7.6 2.2-6.5 0-12.1-4-14.2-10.1l-7.7 6c4 8 12.2 13.6 21.8 13.6z"></path>
+                </svg>
+                Login with Google
+            </button>
+            
+
 
         </form>
-        <a><u>Forgot Password?</u></a>
-        <a href="/signup"><u>Don't have an account? Sign up here</u></a>
+
+        <a href="/signup">Don't have an account?<u> Sign up here</u></a>
     </div>
 </body>
+
 </html>
