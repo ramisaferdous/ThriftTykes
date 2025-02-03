@@ -36,6 +36,7 @@ const signupRoutes = require('./routes/signup.routes.js');
 const loginRoutes = require('./routes/login.routes.js');
 const logoutRoutes = require('./routes/logout.routes.js');
 const dashboardRoutes = require('./routes/dashboard.routes.js');
+const shopRoutes = require('./routes/shop.routes.js');
 
 
 passport.use(new GoogleStrategy({
@@ -132,6 +133,7 @@ app.use(signupRoutes);
 app.use(loginRoutes);
 app.use(logoutRoutes);
 app.use(dashboardRoutes);
+app.use(shopRoutes);
 
 const port = 3000;
 app.listen(port, () => {
