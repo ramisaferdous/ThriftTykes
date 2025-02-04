@@ -23,7 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: { secure: false, httpOnly: true } 
 }));
 
 app.use(passport.initialize());
@@ -45,21 +46,22 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        const user = await db.user.findUnique({
+        let user = await db.user.findUnique({
             where: { email: profile.emails[0].value }
         });
 
         if (!user) {
-            const newUser = await db.user.create({
+            user = await db.user.create({
                 data: {
                     name: profile.displayName,
                     email: profile.emails[0].value,
                     password: null,
                 }
             });
-            return done(null, newUser);
         }
-        return done(null, user);
+
+        console.log("Authenticated User:", user);  // ✅ Debugging
+        return done(null, user);  //  Store the full user object (with `id`)
     } catch (err) {
         return done(err, null);
     }
@@ -67,13 +69,14 @@ passport.use(new GoogleStrategy({
 
 
 
+
 passport.serializeUser((user, done) => {
-    done(null, user.email); // Serialize by email
+    done(null, user.id); // Serialize by email
 });
 
-passport.deserializeUser(async (email, done) => {
+passport.deserializeUser(async (id, done) => {
     try {
-        const user = await db.user.findUnique({ where: { email } });
+        const user = await db.user.findUnique({ where: {id } });
         done(null, user);
     } catch (err) {
         done(err, null);
@@ -87,6 +90,7 @@ app.get('/auth/google',
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (req, res) => {
+        req.session.userId = req.user.email;
         res.redirect('/dashboard'); // Redirect to dashboard on success
     }
 );
@@ -117,16 +121,24 @@ app.get("/", (req, res) => {
 //     }
 //   });
 
+function ensureAuthenticated(req, res, next) {
+    const publicPaths = ['/', '/login', '/signup', '/auth/google', '/auth/google/callback'];
 
-// function ensureAuthenticated(req, res, next) {
-//     const publicPaths = ['/', '/login', '/signup'];
-//     if (publicPaths.includes(req.path) || req.session.isAuthenticated) {
-//         return next();
-//     }
-//     res.redirect('/login');
-// }
+    if (publicPaths.includes(req.path)) {
+        return next();  // Allow these routes
+    }
 
-// app.use(ensureAuthenticated);
+    if (req.session.userId) {
+        return next();  // Allow if authenticated
+    }
+
+    console.log("Redirecting to /login because user is not authenticated");
+    res.redirect('/login');  // Redirect if not authenticated
+}
+
+
+app.use(ensureAuthenticated);
+
 
 
 app.use(signupRoutes);
