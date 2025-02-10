@@ -23,6 +23,7 @@ const handleLogin = async (req, res) => {
         }
 
         req.session.isAuthenticated = true;
+        req.session.userId = user.id;
         req.session.email = user.email;
 
         res.redirect('/dashboard'); 

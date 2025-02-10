@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const db = require('./db');
-
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('html_files'));
 app.use('/css_files', express.static(path.join(__dirname, 'resources/css_files')));
 app.use('/image', express.static(path.join(__dirname, 'resources/image')));
+app.use('/uploads', express.static('uploads')); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,14 +24,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized:false,
     cookie: { secure: false, httpOnly: true } 
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+app.use(cors({
+    origin: "http://localhost:3000", 
+    credentials: true  
+}));
 
 
 const signupRoutes = require('./routes/signup.routes.js');
@@ -60,8 +64,8 @@ passport.use(new GoogleStrategy({
             });
         }
 
-        console.log("Authenticated User:", user);  // ✅ Debugging
-        return done(null, user);  //  Store the full user object (with `id`)
+        console.log("Authenticated User:", user); 
+        return done(null, user);  
     } catch (err) {
         return done(err, null);
     }
@@ -71,7 +75,7 @@ passport.use(new GoogleStrategy({
 
 
 passport.serializeUser((user, done) => {
-    done(null, user.id); // Serialize by email
+    done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -91,7 +95,7 @@ app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (req, res) => {
         req.session.userId = req.user.email;
-        res.redirect('/dashboard'); // Redirect to dashboard on success
+        res.redirect('/dashboard'); 
     }
 );
 
@@ -125,15 +129,15 @@ function ensureAuthenticated(req, res, next) {
     const publicPaths = ['/', '/login', '/signup', '/auth/google', '/auth/google/callback'];
 
     if (publicPaths.includes(req.path)) {
-        return next();  // Allow these routes
+        return next();  
     }
 
     if (req.session.userId) {
-        return next();  // Allow if authenticated
+        return next();  
     }
 
     console.log("Redirecting to /login because user is not authenticated");
-    res.redirect('/login');  // Redirect if not authenticated
+    res.redirect('/login');  
 }
 
 

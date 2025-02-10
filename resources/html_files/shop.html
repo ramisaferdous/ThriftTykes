@@ -9,8 +9,8 @@
 <body>
   <h1>My Shop</h1>
   <h3>Add a New Product</h3>
-  <form id="addProductForm">
-    <!-- Changed name attribute from "productName" to "name" -->
+  <form id="addProductForm" enctype="multipart/form-data">
+   
     <input type="text" name="name" placeholder="Product Name" required>
     <select name="category">
       <option value="clothing">Clothing</option>
@@ -23,6 +23,9 @@
       <option value="used">Used</option>
     </select>
     <input type="number" name="price" placeholder="Price" required>
+
+    <input type="file" name="image" accept="image/*" required>
+
     <button type="submit">Add Product</button>
   </form>
   <h3>Your Products</h3>
@@ -33,47 +36,53 @@
     });
     
     async function fetchProducts() {
-  try {
-    const response = await fetch('/my-shop/products');
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("HTTP Error:", response.status, errorText);
-      
-      if (response.status === 401) {
-        alert("Session expired! Redirecting to login...");
-        window.location.href = "/login"; // ✅ Explicitly redirect the user
-        return;
-      }
+    try {
+        const response = await fetch('/my-shop/products', {credentials: "include"});
+        if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
 
-      throw new Error(`HTTP Error ${response.status}: ${errorText}`);
+        const data = await response.json();
+        const productsList = document.getElementById("productsList");
+        productsList.innerHTML = "";
+
+        data.forEach(product => {
+            const productItem = document.createElement("div");
+            productItem.innerHTML = `
+                <p><strong>${product.name}</strong> - $${product.price}</p>
+                ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" width="100">` : ''}
+                <button onclick="deleteProduct('${product.id}')">Delete</button>
+                <hr>
+            `;
+            productsList.appendChild(productItem);
+        });
+
+    } catch (error) {
+        console.error("Error fetching products:", error);
     }
-    
-    const data = await response.json();
-    console.log("Fetched products:", data);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-  }
 }
 
-    // Remove the extra fetchProducts() call if not needed
-    // fetchProducts();
+
+   
 
     document.getElementById("addProductForm").addEventListener("submit", function (event) {
       event.preventDefault();
       const formData = new FormData(this);
-      // Changed endpoint to "/add-product" to match the router
+      
       fetch("/add-product", {
         method: "POST",
-        body: new URLSearchParams(formData)
-      }).then(() => {
+        body: formData,
+        credentials:"include"
+      })
+      .then(response => response.json())
+      .then(() => {
         fetchProducts();
         this.reset();
-      }).catch(error => console.error("Error adding product:", error));
+      })
+      .catch(error => console.error("Error adding product:", error));
     });
     
     function deleteProduct(productId) {
-      // Changed endpoint to "/delete-product/" and method to GET (or change router to POST)
-      fetch(`/delete-product/${productId}`)
+      
+      fetch(`/delete-product/${productId}`, { method: "DELETE", credentials: "include" })
         .then(() => fetchProducts())
         .catch(error => console.error("Error deleting product:", error));
     }
