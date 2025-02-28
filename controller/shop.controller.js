@@ -78,17 +78,32 @@ exports.deleteProduct = async (req, res) => {
         const { id } = req.params;
         console.log(`Deleting product with ID: ${id}`);
 
+        const userId = req.session.passport?.user;
+        if (!userId) {
+            console.log("Unauthorized request to delete product.");
+            return res.status(401).json({ error: "Unauthorized. Please log in." });
+        }
 
-        const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+        const product = await prisma.product.findUnique({ where: { id: id } }); 
+
         if (!product) {
+            console.log("Product not found in database.");
             return res.status(404).json({ error: "Product not found" });
         }
 
-        await prisma.product.delete({ where: { id: parseInt(id) } });
+        if (product.userId !== userId) {
+            console.log("Unauthorized: Product does not belong to the user.");
+            return res.status(403).json({ error: "Unauthorized: You can't delete this product." });
+        }
 
-        res.redirect('/my-shop');
+        await prisma.product.delete({ where: { id: id } }); 
+
+        console.log("Product deleted successfully.");
+        res.json({ message: "Product deleted successfully" });
     } catch (error) {
         console.error("Error deleting product:", error);
-        res.status(500).json({ error: "Server error", details: error.message }); // ✅ Send error details
+        res.status(500).json({ error: "Server error", details: error.message });
     }
 };
+
+

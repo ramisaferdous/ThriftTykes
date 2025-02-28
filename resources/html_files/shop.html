@@ -80,12 +80,23 @@
       .catch(error => console.error("Error adding product:", error));
     });
     
-    function deleteProduct(productId) {
-      
-      fetch(`/delete-product/${productId}`, { method: "DELETE", credentials: "include" })
-        .then(() => fetchProducts())
-        .catch(error => console.error("Error deleting product:", error));
+    async function deleteProduct(productId) {
+    try {
+        const response = await fetch(`/delete-product/${productId}`, { 
+            method: "DELETE", 
+            credentials: "include"
+        });
+
+        if (!response.ok) throw new Error(`Failed to delete product (Status: ${response.status})`);
+
+        fetchProducts(); // Refresh the product list after deletion
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        alert("Failed to delete product. Please try again.");
     }
+}
+
+
   </script>
 </body>
 </html>
