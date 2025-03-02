@@ -1,5 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
 exports.addToCart = async (req, res) => {
@@ -121,19 +123,60 @@ exports.checkout = async (req, res) => {
       return res.status(401).json({ error: "User not authenticated" });
     }
 
-    const cartItems = await prisma.cart.findMany({ where: { userId } });
+    const cartItems = await prisma.cart.findMany({
+      where: { userId },
+      include: { product: true }, 
+    });
 
     if (cartItems.length === 0) {
       return res.status(400).json({ error: "Cart is empty" });
     }
 
+    
+    const lineItems = cartItems.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.product.name,
+        },
+        unit_amount: Math.round(item.product.price * 100), 
+      },
+      quantity: item.quantity,
+    }));
 
+    
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      success_url: `${req.protocol}://${req.get('host')}/checkout/success`,
+      cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
+      line_items: lineItems,
+    });
 
-    await prisma.cart.deleteMany({ where: { userId } });
-
-    return res.status(200).json({ message: "Checkout successful" });
+    res.json({ url: session.url });
   } catch (error) {
     console.error("Error during checkout:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+};
+exports.checkoutSuccess = async (req, res) => {
+  try {
+      const userId = req.session.passport?.user;
+
+      if (!userId) {
+          return res.status(401).json({ error: "User not authenticated" });
+      }
+
+      
+      await prisma.cart.deleteMany({ where: { userId } });
+
+      res.send("<h2>Payment Successful! Your order has been placed.</h2><a href='/dashboard'>Go back to Dashboard</a>");
+  } catch (error) {
+      console.error("Error in checkout success:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.checkoutCancel = async (req, res) => {
+  res.send("<h2>Payment Cancelled. You can try again.</h2><a href='/cart'>Go back to Cart</a>");
 };
