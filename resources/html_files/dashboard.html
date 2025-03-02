@@ -46,8 +46,10 @@
                         <h3>${product.name}</h3>
                         <p>Category: ${product.category}</p>
                         <p>Price: $${product.price}</p>
+                         <p>Quantity: ${product.quantity}</p>
                         <p>Brand: ${product.brand}</p>
                         <p>Condition: ${product.condition}</p>
+                        <button onclick="addToCart('${product.id}')">Add to Cart</button>
                     `;
                     productList.appendChild(productCard);
                 });
@@ -56,7 +58,20 @@
             }
         }
 
+        async function addToCart(productId) {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId })
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
         
+    }
         fetchProducts();
     </script>
 

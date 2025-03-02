@@ -34,7 +34,7 @@ exports.getMyShop = async (req, res) => {
 exports.addProduct = async (req, res) => {
     try {
         const { name, category, size, brand, condition, price } = req.body;
-
+       
        
         console.log("Session Data:", req.session);
 
@@ -50,6 +50,12 @@ exports.addProduct = async (req, res) => {
             return res.status(400).json({ error: "User not found" });
         }
 
+        const parsedQuantity = parseInt(req.body.quantity)||1;
+        if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+            return res.status(400).json({ error: "Invalid quantity" });
+        }
+
+
 
         const newProduct = await prisma.product.create({
             data: {
@@ -59,6 +65,7 @@ exports.addProduct = async (req, res) => {
                 brand,
                 condition,
                 price: parseFloat(price),
+                quantity: parsedQuantity,
                 imageUrl: req.file ? `/uploads/${req.file.filename}` : null,
                 userId: userId
             }
