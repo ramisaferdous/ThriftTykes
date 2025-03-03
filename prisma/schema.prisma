@@ -20,10 +20,10 @@ model User {
 model Product {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  category  String?
-  size      String?
+  category  String
+  size      String
   brand     String?
-  condition String?
+  condition String
   price     Float
   quantity  Int      @default(1) 
   imageUrl  String?

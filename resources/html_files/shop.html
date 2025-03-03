@@ -23,10 +23,14 @@
    
     <input type="text" name="name" placeholder="Product Name" required>
     <select name="category">
-      <option value="clothing">Clothing</option>
+      <option value="Clothes">Clothes</option>
       <option value="toys">Toys</option>
     </select>
-    <input type="text" name="size" placeholder="Size" required>
+    <select name="size" required>
+      <option value="S">Small (S)</option>
+      <option value="M">Medium (M)</option>
+      <option value="L">Large (L)</option>
+    </select>
     <input type="text" name="brand" placeholder="Brand">
     <select name="condition">
       <option value="new">New</option>
@@ -101,7 +105,7 @@
 
         if (!response.ok) throw new Error(`Failed to delete product (Status: ${response.status})`);
 
-        fetchProducts(); // Refresh the product list after deletion
+        fetchProducts(); 
     } catch (error) {
         console.error("Error deleting product:", error);
         alert("Failed to delete product. Please try again.");

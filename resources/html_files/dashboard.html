@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/css_files/dashboard.css">
 </head>
+
 <body>
-    <!-- Top Bar -->
+
     <header class="top-bar">
         <div class="logo">
             <h1>ThriftTykes</h1>
         </div>
-        <div class="search-bar">
+        <!-- <div class="search-bar">
             <input type="text" id="search" placeholder="Search for products...">
             <button type="button">Search</button>
-        </div>
+        </div> -->
         <nav class="nav-links">
             <a href="/dashboard">Dashboard</a>
             <a href="/my-shop">My Shop</a>
@@ -24,33 +26,62 @@
         </nav>
     </header>
 
-    
+
+    <section class="filters">
+        <label for="category">Category:</label>
+        <select id="category">
+            <option value="">All</option>
+            <option value="Toys">Toys</option>
+            <option value="Clothes">Clothes</option>
+        </select>
+
+        <label for="size">Size:</label>
+        <select id="size">
+            <option value="">All</option>
+            <option value="S">Small (S)</option>
+            <option value="M">Medium (M)</option>
+            <option value="L">Large (L)</option>
+        </select>
+
+        <label for="condition">Condition:</label>
+        <select id="condition">
+            <option value="">All</option>
+            <option value="New">New</option>
+            <option value="Used">Used</option>
+        </select>
+
+        <button onclick="applyFilters()">Apply Filters</button>
+    </section>
+
+
     <section class="dashboard-container" id="product-list">
-       
+
     </section>
 
     <script>
-        async function fetchProducts() {
+        async function fetchProducts(filters = {}) {
             try {
-                const response = await fetch('/dashboard/products');
+                const queryParams = new URLSearchParams(filters).toString();
+                console.log("Applying filters:", queryParams);
+                const response = await fetch(`/dashboard/products?${queryParams}`);
                 const products = await response.json();
 
                 const productList = document.getElementById('product-list');
-                productList.innerHTML = ""; 
+                productList.innerHTML = "";
 
                 products.forEach(product => {
                     const productCard = document.createElement('div');
                     productCard.classList.add('product-card');
                     productCard.innerHTML = `
-                        <img src="${product.imageUrl || '/default.jpg'}" alt="${product.name}">
-                        <h3>${product.name}</h3>
-                        <p>Category: ${product.category}</p>
-                        <p>Price: $${product.price}</p>
-                         <p>Quantity: ${product.quantity}</p>
-                        <p>Brand: ${product.brand}</p>
-                        <p>Condition: ${product.condition}</p>
-                        <button onclick="addToCart('${product.id}')">Add to Cart</button>
-                    `;
+                <img src="${product.imageUrl || '/default.jpg'}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>Category: ${product.category}</p>
+                <p>Price: $${product.price}</p>
+                <p>Quantity: ${product.quantity}</p>
+                <p>Brand: ${product.brand}</p>
+                <p>Condition: ${product.condition}</p>
+                <button onclick="addToCart('${product.id}')">Add to Cart</button>
+            `;
                     productList.appendChild(productCard);
                 });
             } catch (error) {
@@ -58,23 +89,33 @@
             }
         }
 
+
         async function addToCart(productId) {
-        const response = await fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId })
-        });
+            const response = await fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId })
+            });
 
-        const result = await response.json();
-        alert(result.message);
+            const result = await response.json();
+            alert(result.message);
+        }
 
-        
-    }
+        function applyFilters() {
+            const category = document.getElementById('category').value;
+            const size = document.getElementById('size').value.toUpperCase();
+            const condition = document.getElementById('condition').value;
+
+            console.log("Applying filters:", { category, size, condition });
+
+            fetchProducts({ category, size, condition });
+        }
+
+
         fetchProducts();
     </script>
-
-   
 </body>
+
 </html>
