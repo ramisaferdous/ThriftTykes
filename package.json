@@ -17,6 +17,7 @@
     "prisma": "^5.22.0"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "prisma": "prisma"
   }
 }
