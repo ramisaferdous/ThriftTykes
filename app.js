@@ -32,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
-    origin: "https://<your-azure-app-name>.azurewebsites.net", 
+    origin: "http://localhost:3000", 
     credentials: true  
 }));
 
@@ -48,7 +48,8 @@ const cartRoutes= require('./routes/cart.routes.js');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://<your-app-name>.thrifttykesapp-hshmc6f9dzcfawg6.eastus-01.net/auth/google/callback"
+   callbackURL: "https://thrifttykesapp-hshmc6f9dzcfawg6.eastus-01.azurewebsites.net/auth/google/callback"
+
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await db.user.findUnique({
