@@ -32,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
-    origin: "http://localhost:3000", 
+    origin: "https://<your-azure-app-name>.azurewebsites.net", 
     credentials: true  
 }));
 
@@ -48,7 +48,7 @@ const cartRoutes= require('./routes/cart.routes.js');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "https://<your-app-name>.thrifttykesapp-hshmc6f9dzcfawg6.eastus-01.net/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await db.user.findUnique({
@@ -153,7 +153,7 @@ app.use(dashboardRoutes);
 app.use(shopRoutes);
 app.use(cartRoutes);
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`App is listening to port ${port}`);
 });
