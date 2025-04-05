@@ -7,7 +7,6 @@ const app = express();
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 app.use(bodyParser.json());
@@ -154,7 +153,7 @@ app.use(dashboardRoutes);
 app.use(shopRoutes);
 app.use(cartRoutes);
 
-const port = 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`App is listening to port ${port}`);
 });
