@@ -32,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
-    origin: "http://localhost:3000", 
+    origin: "http://localhost:8080", 
     credentials: true  
 }));
 
@@ -153,7 +153,7 @@ app.use(dashboardRoutes);
 app.use(shopRoutes);
 app.use(cartRoutes);
 
-const port = 3000;
+const port = 8080;
 app.listen(port, () => {
     console.log(`App is listening to port ${port}`);
 });
