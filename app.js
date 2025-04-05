@@ -7,6 +7,7 @@ const app = express();
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 app.use(bodyParser.json());
