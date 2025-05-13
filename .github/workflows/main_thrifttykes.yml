@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - ThriftTykes
+name: Build and deploy Node.js app to Azure Web App - thrifttykes
 
 on:
   push:
@@ -27,6 +27,7 @@ jobs:
         run: |
           npm install
           npm run build --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -59,15 +60,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3DA5CEEDA5414493838641E86BD91400 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5ACD39B1B0574EAFBB5EAFEADD3E8335 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FF2DEE01790B40F3B0C142B41C52C546 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9F5ED4185E15406C9C38CC9B25A8BF95 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1AA324D60BC041A9A355B55397545EE0 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E608F2D2FCC8410DAAC5CC28C8D72DA5 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'ThriftTykes'
+          app-name: 'thrifttykes'
           slot-name: 'Production'
           package: .
           
