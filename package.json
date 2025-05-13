@@ -18,6 +18,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "prisma": "prisma"
+    "prisma": "prisma",
+    "postinstall": "prisma generate"
   }
 }
